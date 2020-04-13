@@ -197,7 +197,9 @@ def get_dataset(current_date: datetime.date):
         smokers = ISTAT_return_filtered_series(df_istat_smokers,selected_column="Tipo dato")
         smokers.to_csv(os.path.join("ISTAT_DATA", df_istat_smokers.metadata['main_data_type']+".csv"))
 
-
+    air_path = os.path.join("ISTAT_DATA", "air_pollution_2018.csv")
+    df_istat_air = pd.read_csv(air_path, encoding='utf-8').set_index('NUTS3')
+    
     imprese_path = os.path.join("ISTAT_DATA", "Imprese.csv")
     if os.path.exists(imprese_path):
         imprese = pd.read_csv(imprese_path).pivot_table(index="D1")
@@ -234,7 +236,7 @@ def get_dataset(current_date: datetime.date):
     df_regioni = df_regioni.groupby('denominazione_regione').apply(add_statistics)
     df_regioni = format_df(df_regioni)
 
-    return df, df_regioni, smokers, imprese
+    return df, df_regioni, smokers, imprese, df_istat_air
 
 
 def read_conversion_tables():
