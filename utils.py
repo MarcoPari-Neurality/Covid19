@@ -148,6 +148,10 @@ def check_ds_istat():
 def get_population_df():
     return import_ISTAT_dataset("DCIS_POPRES1_29032020143754329",sep=",")
 
+<<<<<<< HEAD
+=======
+#@st.cache(suppress_st_warning=True,show_spinner=False)
+>>>>>>> removed useless column and removed caching to ease debug
 def get_dataset(current_date: datetime.date):
     df = pd.read_csv("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-province/dpc-covid19-ita-province.csv", keep_default_na=False, na_values=[''])
     df_regioni = pd.read_csv("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni.csv")
@@ -164,7 +168,7 @@ def get_dataset(current_date: datetime.date):
     df_regioni = df_regioni.join(conversioni_regioni, on="denominazione_regione")
     df_nazione['NUTS3'] = 'IT'
     
-    df = df.join(conversioni_province.drop(columns="denominazione_provincia"), on="codice_provincia")
+    df = df.join(conversioni_province.drop(columns="denominazione_provincia"), on="codice_provincia").drop("Unnamed: 3", axis=1)
 
     df.dropna(subset = ["data"], inplace=True)
     df = df.round({"growth_rate":2}) 
