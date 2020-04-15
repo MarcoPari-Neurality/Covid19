@@ -214,11 +214,7 @@ def fig_nuovi_casi_giornalieri(filtered_data):
         y="increased_cases",
         color='denominazione_provincia',
         title="Nuovi Casi al giorno", 
-<<<<<<< HEAD
-        labels={"increased_cases": "Nuovi Casi", 'data': 'Data', 'denominazione_provincia': 'Provincia'})
-=======
         labels={'increased_cases':'Nuovi Casi', 'data': 'Data', 'denominazione_provincia': 'Provincia'})
->>>>>>> changed 'giorno' columns df format from mm/dd to dd/mm
     return fig.update_traces(mode='lines+markers')
 
 @st.cache(allow_output_mutation=True,show_spinner=False)
@@ -695,11 +691,7 @@ elif area_filter == "Regione":
                     log_y=False,
                     color='denominazione_regione',
                     title="Growth rate media ultimi 3gg", 
-<<<<<<< HEAD
                     labels={'increased_cases':'Nuovi Casi', 'data': 'Data', 'denominazione_regione': 'Regione',"smooth_growth_rate":"Growth Rate"})
-=======
-                    labels={'increased_cases':'Nuovi Casi ', 'data': 'Data', 'denominazione_regione': 'Regione',"smooth_growth_rate":"Growth Rate"})
->>>>>>> changed 'giorno' columns df format from mm/dd to dd/mm
         fig.update_traces(mode='lines+markers',hovertemplate = "<b>Growth Rate: %{y}</b><extra></extra>")
         st.plotly_chart(fig,use_container_width=True)
 
