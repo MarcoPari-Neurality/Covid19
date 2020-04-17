@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 import os
->>>>>>> marco/airPollution
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -12,38 +9,6 @@ import plotly.graph_objects as go
 from utils import get_dataset
 
 def print_corr(df:pd.DataFrame):
-<<<<<<< HEAD
-    st.write("Correlation Pearson")
-    #fig = px.imshow(df.corr())
-    #st.plotly_chart(fig,use_container_width=True)
-    fig = go.Figure(data=go.Heatmap(
-                    z=df.corr(),
-                    x=df.columns,
-                    y=df.columns,
-                    hovertemplate = "%{x} <br>%{y} <br>%{z}"))
-    st.plotly_chart(fig,use_container_width=True)
-
-    st.write("Correlation Kendall")
-    #fig = px.imshow(df.corr('kendall'))
-    fig = go.Figure(data=go.Heatmap(
-                    z=df.corr('kendall'),
-                    x=df.columns,
-                    y=df.columns,
-                    hovertemplate = "%{x} <br>%{y} <br>%{z}"))
-    st.plotly_chart(fig,use_container_width=True)
-
-    st.write("Correlation Spearman")
-    #fig = px.imshow(df.corr('spearman'))
-    fig = go.Figure(data=go.Heatmap(
-                    z=df.corr('spearman'),
-                    x=df.columns,
-                    y=df.columns,
-                    hovertemplate = "%{x} <br>%{y} <br>%{z}"))
-    st.plotly_chart(fig,use_container_width=True)
-
-def join_and_plot(df1:pd.DataFrame, df2:pd.DataFrame):
-    print_corr(df1.join(df2))
-=======
     #fig = px.imshow(df.corr())
     fig = go.Figure(data=go.Heatmap(
                     z=df,
@@ -67,7 +32,6 @@ def join_and_plot(df1:pd.DataFrame, df2:pd.DataFrame):
     st.plotly_chart(fig,use_container_width=True)
 
 codici_regioni = ["ITG2", "ITG1", "ITF6", "ITF5", "ITF4", "ITF3", "ITF2", "ITF1", "ITE4", "ITE3", "ITE2", "ITE1", "ITD5", "ITC3", "ITD4", "ITD3", "ITD1", "ITD2", "ITC4", "ITC2", "ITC1"]
->>>>>>> marco/airPollution
 
 df_province, df_regioni, smokers_series, imprese_series, air_series  = get_dataset(date.today())
 
@@ -90,8 +54,6 @@ df_province_today = df_province.set_index("NUTS3")
 df_province_today = df_province_today[df_province_today["data"] == df_province_today["data"].max()]
 
 ##########################################################################################################################################
-<<<<<<< HEAD
-=======
 #########################################################   LOAD NEW DATA   ##############################################################
 ##########################################################################################################################################
 
@@ -156,7 +118,6 @@ morti_resp_path = os.path.join("ISTAT_DATA", "Deaths(#), Diseases of the respira
 morti_resp = pd.read_csv(morti_resp_path).set_index("index")
 
 ##########################################################################################################################################
->>>>>>> marco/airPollution
 ######################################################   DROP USELESS COLUMNS   ##########################################################
 ##########################################################################################################################################
 
@@ -166,9 +127,6 @@ df_province_today = df_province_today.drop(columns=['data', 'stato', 'codice_reg
 ##########################################################################################################################################
 #########################################################   VISUALIZATION   ##############################################################
 ##########################################################################################################################################
-<<<<<<< HEAD
-st.write("REGIONI")
-=======
 st.markdown("# DEATHS GRAPH VISUALIZER")
 morti_resp.at[0,'Covid'] = df_regioni_today['deceduti'].sum()
 
@@ -185,7 +143,6 @@ st.write('<style>div.Widget.row-widget.stRadio > div{flex-direction:row;}</style
 corr_filter = st.radio("Correlation Type",["Pearson","Kendall","Spearman"])
 
 st.markdown("## REGIONI")
->>>>>>> marco/airPollution
 st.write('Popolazione')
 join_and_plot(df_regioni_today, pop_series_reg)
 
@@ -199,11 +156,6 @@ join_and_plot(df_regioni_today, air_reg_series)
 st.write('Imprese')
 join_and_plot(df_regioni_today, imprese_series)
 
-<<<<<<< HEAD
-##########################################################################################################################################
-
-st.write("PROVINCE")
-=======
 st.write('BMI')
 join_and_plot(df_regioni_today, imprese_series)
 
@@ -217,7 +169,6 @@ join_and_plot(df_regioni_today, pov_ind_series_reg)
 ##########################################################################################################################################
 
 st.markdown("## PROVINCE")
->>>>>>> marco/airPollution
 st.write('Popolazione')
 join_and_plot(df_province_today, pop_series)
 
