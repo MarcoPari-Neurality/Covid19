@@ -214,26 +214,10 @@ def fig_nuovi_casi_giornalieri(filtered_data):
         y="increased_cases",
         color='denominazione_provincia',
         title="Nuovi Casi al giorno", 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        labels={'increased_cases':'Nuovi Casi', 'data': 'Data', 'denominazione_provincia': 'Provincia'})
-=======
-<<<<<<< HEAD
-        labels={"increased_cases": "Nuovi Casi", 'data': 'Data', 'denominazione_provincia': 'Provincia'})
-=======
-        labels={'increased_cases':'Nuovi Casi', 'data': 'Data', 'denominazione_provincia': 'Provincia'})
->>>>>>> changed 'giorno' columns df format from mm/dd to dd/mm
->>>>>>> merge conflicts
-    return fig.update_traces(mode='lines+markers')
-
-@st.cache(allow_output_mutation=True,show_spinner=False)
-<<<<<<< HEAD
-=======
         labels={'increased_cases':'Nuovi Casi', 'data': 'Data', 'denominazione_provincia': 'Provincia'})
     return fig.update_traces(mode='lines+markers')
 
 @st.cache(allow_output_mutation=True,show_spinner=False)
->>>>>>> marco/airPollution
 def traces_punti_e_trend(x_data, y_data, idx, hovertemplate, text, name='data'):
            
     line_x, line_y, r_value, mape = linear_reg(x_data, y_data)
@@ -248,50 +232,15 @@ def traces_punti_e_trend(x_data, y_data, idx, hovertemplate, text, name='data'):
                         marker=go.scatter.Marker(color=pretty_colors[idx]))
     
     trace_markers = go.Scatter(
-<<<<<<< HEAD
-=======
-def fig_punti_e_trend(x_data, y_data, idx, hovertemplate):
-    fig = go.Figure()
-           
-    line_x, line_y, r_value, mape = linear_reg(x_data, y_data)
-
-    fig.add_trace(go.Scatter(
-                        x=line_x,
-                        y=line_y,
-                        mode='lines',
-                        hovertemplate = f"<b>R^2</b> : {str(round((r_value**2)*100, 2))}% <br><b>MAPE</b> : {str(round(mape, 2))}%  <extra></extra>",
-                        legendgroup='group',
-                        showlegend =False,
-                        marker=go.scatter.Marker(color=pretty_colors[idx]))
-    )
-    fig.add_trace(go.Scatter(
->>>>>>> added regional air pollution data
-=======
->>>>>>> marco/airPollution
                         x=x_data, 
                         y=y_data,
                         mode='markers',
                         hovertemplate = hovertemplate,
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> marco/airPollution
                         text=text,
                         name=name,
                         legendgroup='group'+str(idx),
                         marker=go.scatter.Marker(color=pretty_colors[idx]))
     return trace_line, trace_markers
-<<<<<<< HEAD
-=======
-                        text=df_regioni_today["denominazione_regione"],
-                        name='data',
-                        legendgroup='group',
-                        marker=go.scatter.Marker(color=pretty_colors[idx]))
-    )
-    return fig
->>>>>>> added regional air pollution data
-=======
->>>>>>> marco/airPollution
 
 mapbox_token = open(".mapbox_token").read()
 px.set_mapbox_access_token(mapbox_token)
@@ -476,21 +425,10 @@ if area_filter == "Nazione":
         if selected_cat == 'PM10':
             idx = 0
             df_regioni_today = df_regioni_today.drop(df_regioni_today[all_columns[idx]][df_regioni_today[all_columns[idx]] == 0].index)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> marco/airPollution
             fig = go.Figure()
             line, markers = traces_punti_e_trend(df_regioni_today["totale_casi"]/df_regioni_today["Popolazione_ETA1_Total"], df_regioni_today[all_columns[idx]], idx, "<b>%{text}</b><br>Casi Positivi procapite confermati: %{x:.3f}%<br>Giorni sopra il limite consigliato %{y}<extra></extra>", df_regioni_today['denominazione_regione'])
             fig.add_trace(line)
             fig.add_trace(markers)
-<<<<<<< HEAD
-=======
-            fig = fig_punti_e_trend(df_regioni_today["totale_casi"]/df_regioni_today["Popolazione_ETA1_Total"], df_regioni_today[all_columns[idx]], idx, "<b>%{text}</b><br>Deceduti per contagiati confermati: %{x:.2f}%<br>"+all_columns[idx].split("_")[-1]+": %{y:.2f}%<extra></extra>")
-
->>>>>>> added regional air pollution data
-=======
->>>>>>> marco/airPollution
             fig.update_layout(
                 title = "Inquinamento Aria (giorni con PM10 superiore al limite consigliato) / COVID",
                 )
@@ -501,39 +439,18 @@ if area_filter == "Nazione":
                         y=[35,]*9,
                         mode='lines',
                         showlegend =False,
-<<<<<<< HEAD
-<<<<<<< HEAD
                         hovertemplate='Limite di giorni sopra limite consigliati<extra></extra>')
-=======
-                        hovertemplate='Limite di giorni consigliato<extra></extra>')
->>>>>>> added regional air pollution data
-=======
-                        hovertemplate='Limite di giorni sopra limite consigliati<extra></extra>')
->>>>>>> marco/airPollution
             )
             st.plotly_chart(fig,use_container_width=True)
 
             idx = 1
             df_regioni_today = df_regioni_today.drop(df_regioni_today[all_columns[idx]][df_regioni_today[all_columns[idx]] == 0].index)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> marco/airPollution
             fig = go.Figure()
             line, markers = traces_punti_e_trend(df_regioni_today["totale_casi"]/df_regioni_today["Popolazione_ETA1_Total"], df_regioni_today[all_columns[idx]], idx, "<b>%{text}</b><br>Casi Positivi procapite confermati: %{x:.3f}%<br>Media Annuale PM10 %{y}<extra></extra>", df_regioni_today['denominazione_regione'])
             fig.add_trace(line)
             fig.add_trace(markers)
             fig.update_layout(
                 title = "Inquinamento Aria (valore annuale medio) PM10 / COVID",
-<<<<<<< HEAD
-=======
-            fig = fig_punti_e_trend(df_regioni_today["totale_casi"]/df_regioni_today["Popolazione_ETA1_Total"], df_regioni_today[all_columns[idx]], idx, "<b>%{text}</b><br>Deceduti per contagiati confermati: %{x:.2f}%<br>"+all_columns[idx].split("_")[-1]+": %{y:.2f}%<extra></extra>")
-
-            fig.update_layout(
-                title = "Inquinamento Aria (valore annuale medio) / COVID",
->>>>>>> added regional air pollution data
-=======
->>>>>>> marco/airPollution
                 )
             fig.update_xaxes(title_text='Contagi Procapite')
             fig.update_yaxes(title_text='Valore medio annuale [μg/m^3]')
@@ -549,25 +466,12 @@ if area_filter == "Nazione":
         else:
             idx = 0
             df_regioni_today = df_regioni_today.drop(df_regioni_today[all_columns[idx]][df_regioni_today[all_columns[idx]] == 0].index)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> marco/airPollution
             fig = go.Figure()
             line, markers = traces_punti_e_trend(df_regioni_today["totale_casi"]/df_regioni_today["Popolazione_ETA1_Total"], df_regioni_today[all_columns[idx]], idx, "<b>%{text}</b><br>Casi Positivi procapite confermati: %{x:.3f}%<br>Media Annuale PM10 %{y}<extra></extra>", df_regioni_today['denominazione_regione'])
             fig.add_trace(line)
             fig.add_trace(markers)
             fig.update_layout(
                 title = "Analisi Correlazione Inquinamento Aria (valore annuale medio) PM2.5 / COVID",
-<<<<<<< HEAD
-=======
-            fig = fig_punti_e_trend(df_regioni_today["totale_casi"]/df_regioni_today["Popolazione_ETA1_Total"], df_regioni_today[all_columns[idx]], idx, "<b>%{text}</b><br>Deceduti per contagiati confermati: %{x:.2f}%<br>"+all_columns[idx].split("_")[-1]+": %{y:.2f}%<extra></extra>")
-
-            fig.update_layout(
-                title = "Analisi Correlazione Inquinamento Aria (valore annuale medio) / COVID",
->>>>>>> added regional air pollution data
-=======
->>>>>>> marco/airPollution
                 )
             fig.add_trace(go.Scatter(
                         x=np.arange(0,0.009, 0.001),
@@ -787,15 +691,7 @@ elif area_filter == "Regione":
                     log_y=False,
                     color='denominazione_regione',
                     title="Growth rate media ultimi 3gg", 
-<<<<<<< HEAD
-<<<<<<< HEAD
                     labels={'increased_cases':'Nuovi Casi', 'data': 'Data', 'denominazione_regione': 'Regione',"smooth_growth_rate":"Growth Rate"})
-=======
-                    labels={'increased_cases':'Nuovi Casi ', 'data': 'Data', 'denominazione_regione': 'Regione',"smooth_growth_rate":"Growth Rate"})
->>>>>>> changed 'giorno' columns df format from mm/dd to dd/mm
-=======
-                    labels={'increased_cases':'Nuovi Casi', 'data': 'Data', 'denominazione_regione': 'Regione',"smooth_growth_rate":"Growth Rate"})
->>>>>>> marco/airPollution
         fig.update_traces(mode='lines+markers',hovertemplate = "<b>Growth Rate: %{y}</b><extra></extra>")
         st.plotly_chart(fig,use_container_width=True)
 
