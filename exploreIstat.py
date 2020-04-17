@@ -6,7 +6,7 @@ from datetime import date, datetime, timedelta
 import plotly.express as px
 import plotly.graph_objects as go
 
-from utils import get_dataset
+from utils import get_dataset, check_ds_istat
 
 def print_corr(df:pd.DataFrame):
     #fig = px.imshow(df.corr())
@@ -57,11 +57,13 @@ df_province_today = df_province_today[df_province_today["data"] == df_province_t
 #########################################################   LOAD NEW DATA   ##############################################################
 ##########################################################################################################################################
 
+check_ds_istat()
+
 malati_path = os.path.join("ISTAT_DATA", "Malati.csv")
 if os.path.exists(malati_path):
     malati_series_reg = pd.read_csv(malati_path).set_index("ITTER107")
 else:
-    malati_path = os.path.join("ISTAT_DATA", "DCCV_AVQ_PERSONE_15042020124208837.csv")
+    malati_path = os.path.join("ISTAT_DATA", "DCCV_AVQ_PERSONE_17042020153238688.csv")
     malati = pd.read_csv(malati_path).drop(columns=["TIME", "Seleziona periodo", "Flag Codes", "Flags", "TIPO_DATO_AVQ", "Territorio"], axis=1)
     malati = malati[malati["MISURA_AVQ"]=="THV"]
     malati = malati.pivot_table(index=["ITTER107"], columns=[ "Tipo dato"], values='Value')
@@ -73,7 +75,7 @@ bmi_path = os.path.join("ISTAT_DATA", "BMI.csv")
 if os.path.exists(bmi_path):
     bmi_series_reg = pd.read_csv(bmi_path).pivot_table(index="ITTER107")
 else:
-    bmi_path = os.path.join("ISTAT_DATA", "DCCV_AVQ_PERSONE1_15042020123532518.csv")
+    bmi_path = os.path.join("ISTAT_DATA", "DCCV_AVQ_PERSONE1_17042020152434760.csv")
     bmi_reg = pd.read_csv(bmi_path).drop(columns=["Seleziona periodo", "SEXISTAT1", "Sesso", "Territorio", "TIPO_DATO_AVQ", "Flag Codes", "Flags"], axis=1)
     bmi_reg = bmi_reg[bmi_reg["MISURA_AVQ"]=="THV"]
     bmi_reg = bmi_reg[bmi_reg["TIME"]==bmi_reg.TIME.max()].drop(columns=["TIME"], axis=1)
@@ -85,7 +87,7 @@ pov_fam_path = os.path.join("ISTAT_DATA", "Pov_Fam.csv")
 if os.path.exists(pov_fam_path):
     pov_fam_series_reg = pd.read_csv(pov_fam_path).pivot_table(index="ITTER107")
 else:
-    pov_fam_path = os.path.join("ISTAT_DATA", "DCCV_POVERTA_15042020122230988.csv")
+    pov_fam_path = os.path.join("ISTAT_DATA", "DCCV_POVERTA_17042020152758777.csv")
     pov_fam_reg = pd.read_csv(pov_fam_path).drop(columns=["Seleziona periodo", "Flag Codes", "Flags", "TIPO_DATO8", "Tipo dato", "Territorio"], axis=1)
     pov_fam_reg = pov_fam_reg[pov_fam_reg["TIME"]==pov_fam_reg.TIME.max()].drop(columns=["TIME"], axis=1)
     pov_fam_series_reg = pov_fam_reg.set_index("ITTER107").drop(index="IT")
@@ -95,13 +97,13 @@ pov_ind_path = os.path.join("ISTAT_DATA", "Pov_Ind.csv")
 if os.path.exists(pov_ind_path):
     pov_ind_series_reg = pd.read_csv(pov_ind_path).pivot_table(index="ITTER107")
 else:
-    pov_ind_path = os.path.join("ISTAT_DATA", "DCCV_POVERTA_15042020122400938.csv")
+    pov_ind_path = os.path.join("ISTAT_DATA", "DCCV_POVERTA_17042020152721446.csv")
     pov_ind_reg = pd.read_csv(pov_ind_path).drop(columns=["Seleziona periodo", "Flag Codes", "Flags", "TIPO_DATO8", "Tipo dato", "Territorio"], axis=1)
     pov_ind_reg = pov_ind_reg[pov_ind_reg["TIME"]==pov_ind_reg.TIME.max()].drop(columns=["TIME"], axis=1)
     pov_ind_series_reg = pov_ind_reg.set_index(["ITTER107"]).drop(index=["IT", "ITC", "ITCD", "ITD", "ITDA", "ITE", "ITF", "ITFG", "ITG"])
     pov_ind_series_reg.to_csv(os.path.join("ISTAT_DATA", "Pov_Ind.csv"))
 
-causa_morte_path = os.path.join("ISTAT_DATA", "DCIS_CMORTE1_EV_15042020124632228.csv")
+causa_morte_path = os.path.join("ISTAT_DATA", "DCIS_CMORTE1_EV_17042020153004669.csv")
 causa_morte = pd.read_csv(causa_morte_path).drop(columns=["TIME", "Seleziona periodo", "Flag Codes", "Flags", "TIPO_DATO15", "Tipo dato", "Sesso", "CAUSEMORTE_SL", "Territorio"], axis=1)
 
 causa_morte_series_reg = causa_morte[causa_morte["ITTER107"].isin(codici_regioni+["ITD20", "ITD10"])].replace({"ITD20":"ITD2", "ITD10":"ITD1"})

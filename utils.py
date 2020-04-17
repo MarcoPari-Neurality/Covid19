@@ -140,7 +140,12 @@ def check_ds_istat():
     if (not os.path.exists(os.path.join("ISTAT_DATA","DCCV_AVQ_FAMIGLIE_01042020194245399.csv")) or
         not os.path.exists(os.path.join("ISTAT_DATA","DCCV_AVQ_PERSONE_01042020202759289.csv")) or
         not os.path.exists(os.path.join("ISTAT_DATA","DCIS_POPRES1_29032020143754329.csv")) or
-        not os.path.exists(os.path.join("ISTAT_DATA","DICA_ASIAUE1P_02042020145705482.csv"))):
+        not os.path.exists(os.path.join("ISTAT_DATA","DICA_ASIAUE1P_02042020145705482.csv")) or
+        not os.path.exists(os.path.join("ISTAT_DATA","DCCV_AVQ_PERSONE_17042020153238688.csv")) or
+        not os.path.exists(os.path.join("ISTAT_DATA","DCCV_AVQ_PERSONE1_17042020152434760.csv")) or
+        not os.path.exists(os.path.join("ISTAT_DATA","DCCV_POVERTA_17042020152758777.csv")) or
+        not os.path.exists(os.path.join("ISTAT_DATA","DCCV_POVERTA_17042020152721446.csv")) or
+        not os.path.exists(os.path.join("ISTAT_DATA","DCIS_CMORTE1_EV_17042020153004669.csv"))):
         with ZipFile(os.path.join("ISTAT_DATA","istat.zip"), 'r') as zipObj:
             # Extract all the contents of zip file in current directory
             zipObj.extractall("ISTAT_DATA")
