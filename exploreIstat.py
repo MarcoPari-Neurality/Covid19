@@ -35,25 +35,24 @@ codici_regioni = ["ITG2", "ITG1", "ITF6", "ITF5", "ITF4", "ITF3", "ITF2", "ITF1"
 
 df_province, df_regioni, smokers_series, imprese_series, air_series  = get_dataset(date.today())
 
-df_regioni_today = df_regioni.set_index("NUTS3")
-df_regioni_today = df_regioni_today[df_regioni_today["data"] == df_regioni_today["data"].max()]
-st.write(df_regioni_today)
-df_province_today = df_province.set_index("NUTS3")      
-df_province_today = df_province_today[df_province_today["data"] == df_province_today["data"].max()]
+air_reg_series = air_series.drop(columns=["CODICE PROVINCIA", "COMUNI", "denominazione_regione"]).pivot_table(index='NUTS3_regione')
+
+df_regioni_today = df_regioni[df_regioni["data"] == df_regioni["data"].max()]
+
+df_province_today = df_province[df_province["data"] == df_province["data"].max()]
 
 cols = [c for c in df_regioni_today.columns if 'Popolazione' in c or 'NUTS3' in c or 'data' in c]
-pop_series_reg = df_regioni_today[cols]#.set_index('NUTS3')
-st.write(pop_series_reg)
+pop_series_reg = df_regioni_today[cols].set_index('NUTS3')
 
-cols = [c for c in df_province.columns if 'Popolazione' in c or 'NUTS3' in c or 'data' in c]
-pop_series = df_province[cols].set_index('NUTS3')
+cols = [c for c in df_province_today.columns if 'Popolazione' in c or 'NUTS3' in c or 'data' in c]
+pop_series = df_province_today[cols].set_index('NUTS3')
 
 
-cols = [c for c in df_regioni.columns if not 'Popolazione' in c]
-df_regioni = df_regioni[cols]
+cols = [c for c in df_regioni_today.columns if not 'Popolazione' in c]
+df_regioni_today = df_regioni_today[cols].set_index("NUTS3")
 
-cols = [c for c in df_province.columns if not 'Popolazione' in c]
-df_province = df_province[cols]
+cols = [c for c in df_province_today.columns if not 'Popolazione' in c]
+df_province_today = df_province_today[cols].set_index("NUTS3")
 
 
 
@@ -94,7 +93,7 @@ else:
     pov_fam_path = os.path.join("ISTAT_DATA", "DCCV_POVERTA_17042020152758777.csv")
     pov_fam_reg = pd.read_csv(pov_fam_path).drop(columns=["Seleziona periodo", "Flag Codes", "Flags", "TIPO_DATO8", "Tipo dato", "Territorio"], axis=1)
     pov_fam_reg = pov_fam_reg[pov_fam_reg["TIME"]==pov_fam_reg.TIME.max()].drop(columns=["TIME"], axis=1)
-    pov_fam_series_reg = pov_fam_reg.set_index("ITTER107").drop(index="IT")
+    pov_fam_series_reg = pov_fam_reg.set_index("ITTER107").drop(index="IT").rename(columns={"Value":"Pov_Fam"})
     pov_fam_series_reg.to_csv(os.path.join("ISTAT_DATA", "Pov_Fam.csv"))
 
 pov_ind_path = os.path.join("ISTAT_DATA", "Pov_Ind.csv")
@@ -104,7 +103,7 @@ else:
     pov_ind_path = os.path.join("ISTAT_DATA", "DCCV_POVERTA_17042020152721446.csv")
     pov_ind_reg = pd.read_csv(pov_ind_path).drop(columns=["Seleziona periodo", "Flag Codes", "Flags", "TIPO_DATO8", "Tipo dato", "Territorio"], axis=1)
     pov_ind_reg = pov_ind_reg[pov_ind_reg["TIME"]==pov_ind_reg.TIME.max()].drop(columns=["TIME"], axis=1)
-    pov_ind_series_reg = pov_ind_reg.set_index(["ITTER107"]).drop(index=["IT", "ITC", "ITCD", "ITD", "ITDA", "ITE", "ITF", "ITFG", "ITG"])
+    pov_ind_series_reg = pov_ind_reg.set_index(["ITTER107"]).drop(index=["IT", "ITC", "ITCD", "ITD", "ITDA", "ITE", "ITF", "ITFG", "ITG"]).rename(columns={"Value":"Pov_Ind"})
     pov_ind_series_reg.to_csv(os.path.join("ISTAT_DATA", "Pov_Ind.csv"))
 
 causa_morte_path = os.path.join("ISTAT_DATA", "DCIS_CMORTE1_EV_17042020153004669.csv")
@@ -124,13 +123,11 @@ morti_resp_path = os.path.join("ISTAT_DATA", "Deaths(#), Diseases of the respira
 morti_resp = pd.read_csv(morti_resp_path).set_index("index")
 
 ##########################################################################################################################################
-############################################   DROPPING USELESS - ADDING USEFUL COLUMNS   ################################################
+##########################################   DROPPING USELESS - ADDING PROCAPITE COLUMNS   ###############################################
 ##########################################################################################################################################
 
 df_regioni_today = df_regioni_today.drop(columns=['data', 'stato', 'codice_regione', 'denominazione_regione', 'lat', 'long', 'note_it', 'note_en', 'codice_storico', 'giorno'], axis=1)
 df_province_today = df_province_today.drop(columns=['data', 'stato', 'codice_regione', 'denominazione_regione', 'codice_provincia', 'denominazione_provincia', 'sigla_provincia', 'lat', 'lon', 'note_it', 'note_en', 'giorno'], axis=1)
-st.write(df_regioni_today['ricoverati_con_sintomi'])
-st.write(pop_series_reg)
 
 df_regioni_today['ricoverati_con_sintomi_procapite'] = df_regioni_today['ricoverati_con_sintomi']/pop_series_reg['Popolazione_ETA1_Total']
 df_regioni_today['terapia_intensiva_procapite'] = df_regioni_today['terapia_intensiva']/pop_series_reg['Popolazione_ETA1_Total']
@@ -142,9 +139,41 @@ df_regioni_today['totale_casi_procapite'] = df_regioni_today['totale_casi']/pop_
 df_regioni_today['tamponi_procapite'] = df_regioni_today['tamponi']/pop_series_reg['Popolazione_ETA1_Total']
 df_regioni_today['casi_testati_procapite'] = df_regioni_today['casi_testati']/pop_series_reg['Popolazione_ETA1_Total']
 
+df_province_today['totale_casi_procapite'] = df_province_today['totale_casi']/pop_series['Popolazione_ETA1_Total']
 
-st.write(df_province_today)
-df_province_today
+##########################################################################################################################################
+
+st.markdown("# HIGHEST CORRELATION VALUES")
+st.markdown("## REGIONI")
+
+df_total=df_regioni_today.join(pop_series_reg)
+
+for idx, df in enumerate([smokers_series, air_reg_series, imprese_series, bmi_series_reg, pov_fam_series_reg, pov_ind_series_reg]):
+    df_total = df_total.join(df)
+
+c = df_total.corr('pearson').abs()
+s = c.unstack()
+so = s.sort_values(kind="quicksort").to_frame().rename(columns={0:"pearson"})
+
+for corr_type in ['kendall', 'spearman']:
+    c = df_total.corr(corr_type).abs()
+    s = c.unstack()
+    tmp = s.sort_values(kind="quicksort").to_frame().rename(columns={0:corr_type})
+    so = so.join(tmp)
+so = so.reset_index()
+
+so = so[so["level_0"]!=so["level_1"]]
+# so = so[so['pearson']<=0.9999]
+# so = so[so['kendall']<=0.9999]
+# so = so[so['spearman']<=0.9999]
+so = so[so["level_0"].isin(df_regioni_today.columns)]
+so = so[~so["level_1"].isin(df_regioni_today.columns)]
+
+so['ordered-cols'] = so.apply(lambda x: '-'.join(sorted([x['level_0'],x['level_1']])),axis=1)
+dataCorr = so.drop_duplicates(['ordered-cols'])
+dataCorr.drop(['ordered-cols'], axis=1, inplace=True)
+dataCorr.to_csv(os.path.join("ISTAT_DATA", "correlations.csv"))
+
 ##########################################################################################################################################
 #########################################################   VISUALIZATION   ##############################################################
 ##########################################################################################################################################
@@ -171,14 +200,13 @@ st.write('Fumatori')
 join_and_plot(df_regioni_today, smokers_series)
 
 st.write('Inquinamento')
-air_reg_series = air_series.drop(columns=["CODICE PROVINCIA", "COMUNI", "denominazione_regione"]).pivot_table(index='NUTS3_regione')
 join_and_plot(df_regioni_today, air_reg_series)
 
 st.write('Imprese')
 join_and_plot(df_regioni_today, imprese_series)
 
 st.write('BMI')
-join_and_plot(df_regioni_today, imprese_series)
+join_and_plot(df_regioni_today, bmi_series_reg)
 
 st.write('Povertà Familiare')
 join_and_plot(df_regioni_today, pov_fam_series_reg)
