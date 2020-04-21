@@ -35,10 +35,17 @@ codici_regioni = ["ITG2", "ITG1", "ITF6", "ITF5", "ITF4", "ITF3", "ITF2", "ITF1"
 
 df_province, df_regioni, smokers_series, imprese_series, air_series  = get_dataset(date.today())
 
-cols = [c for c in df_regioni.columns if 'Popolazione' in c or 'NUTS3' in c]
-pop_series_reg = df_regioni[cols].set_index('NUTS3')
+df_regioni_today = df_regioni.set_index("NUTS3")
+df_regioni_today = df_regioni_today[df_regioni_today["data"] == df_regioni_today["data"].max()]
+st.write(df_regioni_today)
+df_province_today = df_province.set_index("NUTS3")      
+df_province_today = df_province_today[df_province_today["data"] == df_province_today["data"].max()]
 
-cols = [c for c in df_province.columns if 'Popolazione' in c or 'NUTS3' in c]
+cols = [c for c in df_regioni_today.columns if 'Popolazione' in c or 'NUTS3' in c or 'data' in c]
+pop_series_reg = df_regioni_today[cols]#.set_index('NUTS3')
+st.write(pop_series_reg)
+
+cols = [c for c in df_province.columns if 'Popolazione' in c or 'NUTS3' in c or 'data' in c]
 pop_series = df_province[cols].set_index('NUTS3')
 
 
@@ -48,10 +55,7 @@ df_regioni = df_regioni[cols]
 cols = [c for c in df_province.columns if not 'Popolazione' in c]
 df_province = df_province[cols]
 
-df_regioni_today = df_regioni.set_index("NUTS3")
-df_regioni_today = df_regioni_today[df_regioni_today["data"] == df_regioni_today["data"].max()]
-df_province_today = df_province.set_index("NUTS3")      
-df_province_today = df_province_today[df_province_today["data"] == df_province_today["data"].max()]
+
 
 ##########################################################################################################################################
 #########################################################   LOAD NEW DATA   ##############################################################
@@ -120,12 +124,27 @@ morti_resp_path = os.path.join("ISTAT_DATA", "Deaths(#), Diseases of the respira
 morti_resp = pd.read_csv(morti_resp_path).set_index("index")
 
 ##########################################################################################################################################
-######################################################   DROP USELESS COLUMNS   ##########################################################
+############################################   DROPPING USELESS - ADDING USEFUL COLUMNS   ################################################
 ##########################################################################################################################################
 
 df_regioni_today = df_regioni_today.drop(columns=['data', 'stato', 'codice_regione', 'denominazione_regione', 'lat', 'long', 'note_it', 'note_en', 'codice_storico', 'giorno'], axis=1)
 df_province_today = df_province_today.drop(columns=['data', 'stato', 'codice_regione', 'denominazione_regione', 'codice_provincia', 'denominazione_provincia', 'sigla_provincia', 'lat', 'lon', 'note_it', 'note_en', 'giorno'], axis=1)
+st.write(df_regioni_today['ricoverati_con_sintomi'])
+st.write(pop_series_reg)
 
+df_regioni_today['ricoverati_con_sintomi_procapite'] = df_regioni_today['ricoverati_con_sintomi']/pop_series_reg['Popolazione_ETA1_Total']
+df_regioni_today['terapia_intensiva_procapite'] = df_regioni_today['terapia_intensiva']/pop_series_reg['Popolazione_ETA1_Total']
+df_regioni_today['totale_ospedalizzati_procapite'] = df_regioni_today['totale_ospedalizzati']/pop_series_reg['Popolazione_ETA1_Total']
+df_regioni_today['isolamento_domiciliare_procapite'] = df_regioni_today['isolamento_domiciliare']/pop_series_reg['Popolazione_ETA1_Total']
+df_regioni_today['dimessi_guariti_procapite'] = df_regioni_today['dimessi_guariti']/pop_series_reg['Popolazione_ETA1_Total']
+df_regioni_today['deceduti_procapite'] = df_regioni_today['deceduti']/pop_series_reg['Popolazione_ETA1_Total']
+df_regioni_today['totale_casi_procapite'] = df_regioni_today['totale_casi']/pop_series_reg['Popolazione_ETA1_Total']
+df_regioni_today['tamponi_procapite'] = df_regioni_today['tamponi']/pop_series_reg['Popolazione_ETA1_Total']
+df_regioni_today['casi_testati_procapite'] = df_regioni_today['casi_testati']/pop_series_reg['Popolazione_ETA1_Total']
+
+
+st.write(df_province_today)
+df_province_today
 ##########################################################################################################################################
 #########################################################   VISUALIZATION   ##############################################################
 ##########################################################################################################################################
